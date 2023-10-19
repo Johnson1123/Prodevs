@@ -1,23 +1,22 @@
 const express = require("express");
-const db = require("../utils/db");
+const { myDb } = require("../utils/db");
 const Routes = express.Router();
 
 const path = require("path");
+const { error } = require("console");
+const { createUser, findUsers } = require("../controller/user");
 
 Routes.get("/register", (req, res) => {
-  res.sendFile(path.join(__dirname, "../", "views", "register.html"));
+  res.render("register");
 });
 
 Routes.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "login.html"));
+  res.render("login");
 });
 
-Routes.use("/app/register", (req, res) => {
-  res.redirect("/login");
-});
-Routes.post("/home", (req, res) => {
-  res.send(req.body);
-});
+Routes.use("/app/register", createUser);
+
+Routes.get("/home", findUsers);
 
 Routes.get("/database/users", (req, res) => {
   db.execute("select * from users")
