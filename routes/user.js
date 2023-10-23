@@ -1,14 +1,34 @@
 const express = require("express");
 const { myDb } = require("../utils/db");
+const mongodb = require("mongodb");
 const Routes = express.Router();
 
 const path = require("path");
 const { error } = require("console");
-const { createUser, findUsers } = require("../controller/user");
+const {
+  createUser,
+  findUsers,
+  updateUser,
+  deleteUser,
+} = require("../controller/user");
 
 Routes.get("/register", (req, res) => {
   res.render("register");
 });
+
+Routes.get("/app/update/:id", (req, res) => {
+  const { id } = req.params;
+  const db = myDb();
+  db.collection("users")
+    .findOne({ _id: new mongodb.ObjectId(id) })
+    .then((user) => {
+      res.render("update", { user });
+    })
+    .catch((err) => console.log(err));
+});
+
+Routes.post("/app/update", updateUser);
+Routes.get("/app/delete/:id", deleteUser);
 
 Routes.get("/login", (req, res) => {
   res.render("login");

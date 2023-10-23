@@ -1,0 +1,13 @@
+<%- include("header.ejs") %>
+<body>
+    <%- include('Nav.ejs') %>
+    <h1>Update User</h1>
+    <form action="/app/update" method="post">
+      <input type="text" name="name" id="" value="<%- user.name %>" placeholder="name" />
+      <input type="email" name="email" id="" value="<%- user.email %>" placeholder="email" />
+      <input type="password" name="password" id="" placeholder="password" />
+      <input type="text" name="id" value="<%- user._id %>" />
+      <input type="submit" name="" id="" value="Update" />
+    </form>
+  </body>
+</html>

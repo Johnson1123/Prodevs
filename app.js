@@ -85,6 +85,38 @@
 
 // -------------------- Day 6 ------------------
 
+// const express = require("express");
+// const app = express();
+
+// const path = require("path");
+// const bodyPaser = require("body-parser");
+// const { mongoClient } = require("./utils/db");
+// const dot = require("dotenv");
+// const { MongoClient } = require("mongodb");
+// app.use(express.static(__dirname + "/public"));
+// app.set("view engine", "ejs");
+// // app.set("view", "views")
+
+// app.use(bodyPaser.urlencoded({ extended: true }));
+
+// const Routes = require("./routes/user");
+// const { default: mongoose } = require("mongoose");
+
+// app.use(Routes);
+
+// mongoClient(app.listen(3000));
+
+// mongoose
+//   .connect(
+//     "mongodb+srv://dammy:Dammy1123@dammy.5lgvdve.mongodb.net/shop?retryWrites=true&w=majority"
+//   )
+//   .then((connect) => {
+//     app.listen(3000);
+//     console.log("is connected");
+//   })
+//   .catch((err) => console.log(err));
+
+// --------------- Day 8 --------------------
 const express = require("express");
 const app = express();
 
@@ -93,16 +125,14 @@ const bodyPaser = require("body-parser");
 const { mongoClient } = require("./utils/db");
 const dot = require("dotenv");
 const { MongoClient } = require("mongodb");
-// app.use(dot.config());
-
+app.use(express.static(__dirname + "/public"));
 app.set("view engine", "ejs");
 // app.set("view", "views")
-
-app.use(express.static(path.join(__dirname, "views")));
 
 app.use(bodyPaser.urlencoded({ extended: true }));
 
 const Routes = require("./routes/user");
+const { default: mongoose } = require("mongoose");
 
 app.use(Routes);
 

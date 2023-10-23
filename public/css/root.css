@@ -1,0 +1,34 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: "Rubik", sans-serif;
+}
+
+:root {
+  --pramiry: #b3a492;
+  --second: #daddb1;
+  --text: #d6c7ae;
+  --other: #d6c7ae;
+}
+
+.users-con {
+  display: flex;
+  width: 50%;
+  justify-content: space-between;
+  padding: 15px 10px;
+  margin: 10px;
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.Update,
+.Delete {
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: green;
+  border: none;
+  color: #fff;
+}
+.Delete {
+  background-color: red;
+}

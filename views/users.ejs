@@ -1,0 +1,14 @@
+<%- include("header.ejs") %>
+<body>
+ <%- include('Nav.ejs') %>
+
+    <% users.forEach( user => { %>
+    <div class="users-con">
+      <h3><%- user.name %></h3>
+      <h3><%- user.email %></h3>
+      <a  href="http://localhost:3000/app/update/<%- user._id %>" class="Update">Update</a>
+      <a  href="http://localhost:3000/app/delete/<%- user._id %>" class="Delete">Delete</a>
+    </div>
+    <% }) %>
+  </body>
+</html>

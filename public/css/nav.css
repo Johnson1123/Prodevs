@@ -1,0 +1,36 @@
+.header {
+  height: 50px;
+  width: 100%;
+  background-color: var(--pramiry);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  box-shadow: 2px 2px 5px var(--text);
+}
+
+.logo a {
+  color: #111;
+  font-size: 24px;
+  text-decoration: none;
+  margin-left: 20px;
+}
+.nav {
+  display: flex;
+  font-size: 18px;
+  gap: 20px;
+
+  text-decoration: none;
+  margin-right: 20px;
+  cursor: pointer;
+}
+.nav li {
+  list-style: none;
+  padding: 5px;
+}
+
+.nav li a {
+  cursor: pointer;
+  text-decoration: none;
+  color: brown;
+}
