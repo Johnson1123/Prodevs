@@ -117,8 +117,32 @@
 //   .catch((err) => console.log(err));
 
 // --------------- Day 8 --------------------
+// const express = require("express");
+// const app = express();
+
+// const path = require("path");
+// const bodyPaser = require("body-parser");
+// const { mongoClient } = require("./utils/db");
+// const dot = require("dotenv");
+// const { MongoClient } = require("mongodb");
+// app.use(express.static(__dirname + "/public"));
+// app.set("view engine", "ejs");
+// // app.set("view", "views")
+
+// app.use(bodyPaser.urlencoded({ extended: true }));
+
+// const Routes = require("./routes/user");
+// const { default: mongoose } = require("mongoose");
+
+// app.use(Routes);
+
+// mongoClient(app.listen(3000));
+
+// ------------------ 9 ----------------------
+
 const express = require("express");
 const app = express();
+const mongoose = require("mongoose");
 
 const path = require("path");
 const bodyPaser = require("body-parser");
@@ -132,8 +156,14 @@ app.set("view engine", "ejs");
 app.use(bodyPaser.urlencoded({ extended: true }));
 
 const Routes = require("./routes/user");
-const { default: mongoose } = require("mongoose");
 
 app.use(Routes);
 
-mongoClient(app.listen(3000));
+mongoose
+  .connect(
+    "mongodb+srv://dammy:Dammy1123@dammy.5lgvdve.mongodb.net/shop?retryWrites=true&w=majority"
+  )
+  .then((user) => {
+    app.listen(3000);
+    console.log(user.connection.host);
+  });
