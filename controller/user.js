@@ -79,13 +79,28 @@ const createUser = async (req, res) => {
   }
 };
 
-const findUsers = async (req, res) => {};
+const findUsers = async (req, res) => {
+  try {
+    await User.find().then((users) => {
+      res.render("users", { users });
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const deleteUser = async (req, res) => {
   const { id } = req.params;
 };
 const updateUser = async (req, res) => {
   const { name, id, email, password } = req.body;
+  try {
+    await User.findByIdAndUpdate(id, { name, email, password }).then((user) => {
+      res.redirect("/home");
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 // findOne({_id: new mongodb.ObjectId(prod.id)})

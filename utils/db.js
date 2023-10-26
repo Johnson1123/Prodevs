@@ -1,5 +1,7 @@
 // ---------------- mysql connection -------------
 
+const { default: mongoose } = require("mongoose");
+
 // const mysql2 = require("mysql2");
 // let connect = mysql2.createPool({
 //   host: "localhost",
@@ -55,3 +57,17 @@
 //   });
 
 // module.exports = mongoClient;
+
+// --------------- db ----------
+
+const db = (callback) =>
+  mongoose
+    .connect(
+      "mongodb+srv://dammy:Dammy1123@dammy.5lgvdve.mongodb.net/shop?retryWrites=true&w=majority"
+    )
+    .then((user) => {
+      callback;
+      console.log(user.connection.host);
+    });
+
+module.exports = db;

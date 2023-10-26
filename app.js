@@ -156,14 +156,8 @@ app.set("view engine", "ejs");
 app.use(bodyPaser.urlencoded({ extended: true }));
 
 const Routes = require("./routes/user");
+const db = require("./utils/db");
 
 app.use(Routes);
 
-mongoose
-  .connect(
-    "mongodb+srv://dammy:Dammy1123@dammy.5lgvdve.mongodb.net/shop?retryWrites=true&w=majority"
-  )
-  .then((user) => {
-    app.listen(3000);
-    console.log(user.connection.host);
-  });
+db(app.listen(3000));
