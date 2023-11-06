@@ -10,12 +10,22 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     min: [5, "Email too short"],
-    required: [true, "Email is required"],
+    required: [true, "email is required"],
+    unique: true,
   },
   password: {
     type: String,
     min: [3, "Password too short"],
-    required: [true, "Email is required"],
+    required: [true, "password is required"],
+  },
+
+  avater: {
+    type: Object,
+  },
+  phone: {
+    type: String,
+    max: [11, "number Most be 11"],
+    min: [11, "Number Most be 11"],
   },
 });
 

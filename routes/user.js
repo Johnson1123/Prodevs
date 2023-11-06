@@ -10,6 +10,7 @@ const {
   findUsers,
   updateUser,
   deleteUser,
+  loginUser,
 } = require("../controller/user");
 const { User } = require("../model/user");
 
@@ -34,8 +35,9 @@ Routes.get("/app/delete/:id", deleteUser);
 Routes.get("/login", (req, res) => {
   res.render("login");
 });
+Routes.post("/login", loginUser);
 
-Routes.use("/app/register", createUser);
+Routes.post("/app/register", createUser);
 
 Routes.get("/home", findUsers);
 

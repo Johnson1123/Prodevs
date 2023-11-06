@@ -61,13 +61,9 @@ const { default: mongoose } = require("mongoose");
 // --------------- db ----------
 
 const db = (callback) =>
-  mongoose
-    .connect(
-      "mongodb+srv://dammy:Dammy1123@dammy.5lgvdve.mongodb.net/shop?retryWrites=true&w=majority"
-    )
-    .then((user) => {
-      callback;
-      console.log(user.connection.host);
-    });
+  mongoose.connect(process.env.MONGODB_CONNECTION).then((user) => {
+    callback;
+    console.log(user.connection.host);
+  });
 
 module.exports = db;
