@@ -69,10 +69,15 @@
 const mongodb = require("mongodb");
 const { User } = require("../model/user");
 const bcrypt = require("bcrypt");
+const { handleUpload } = require("../utils/handleUpload");
+const { signToken } = require("../utils/jwt");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.CLIENT_ID);
+const jwt = require("jsonwebtoken");
 
 const createUser = async (req, res) => {
   console.log(req.body);
-  const { name, email, password, confirmPassword, phone, avater } = req.body;
+  const { name, email, password, confirmPassword, phone } = req.body;
   try {
     if (
       name === "" ||
@@ -102,18 +107,23 @@ const createUser = async (req, res) => {
         message: "User already exist",
       });
     }
+    // const b64 = Buffer.from(req.file.buffer).toString("base64");
+    // let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    // const cldRes = await handleUpload(dataURI);
 
     const hashPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
       email,
       password: hashPassword,
-      avater,
+      // avater: cldRes.url,
       phone,
     });
-    res.status(201).json({
+    const token = signToken({ ...user });
+    return res.status(201).json({
       status: "susscess",
       data: user,
+      token: token,
     });
   } catch (error) {
     console.log(error);
@@ -146,10 +156,10 @@ const updateUser = async (req, res) => {
   }
 };
 
-const loginUser = (req, res) => {
+const loginUser = async (req, res) => {
   // res.setHeader("Set-Cookie", "isLoggined=true");
-  const { email, password } = req.body.email;
-  const user = User.findOne({ email });
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
 
   if (!user) {
     return res.status(400).json({
@@ -158,10 +168,50 @@ const loginUser = (req, res) => {
     });
   }
 
+  const correctPass = await bcrypt.compare(password, user.password);
+
+  if (!correctPass) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Incorrect Credential",
+    });
+  }
+
+  const token = await signToken({ ...user });
+
+  return res.status(200).json({
+    status: "success",
+    user,
+    token,
+  });
   // req.session.isLoggined = true;
   // req.session.user = user;
-  res.redirect("/home");
 };
+
+const googleAuth = async (req, res) => {
+  const { token } = req.body;
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.CLIENT_ID,
+  });
+  const { name, email, picture } = ticket.getPayload();
+  const user = await User.create({ name, email, picture });
+  res.status(201).json({
+    status: "Success",
+    user,
+  });
+};
+
+const updateProfile = async (req, res) => {
+  const user = req.body;
+
+  return res.status(200).json({
+    status: "success",
+    user,
+    message: "You're authorized",
+  });
+};
+
 // findOne({_id: new mongodb.ObjectId(prod.id)})
 // updateOne({ _id: new mongodb.ObjectId(prod.id) }, { $set: { name: "" } });
 
@@ -211,3 +261,5 @@ exports.findUsers = findUsers;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
 exports.loginUser = loginUser;
+exports.googleAuth = googleAuth;
+exports.updateProfile = updateProfile;

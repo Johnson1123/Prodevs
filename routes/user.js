@@ -2,6 +2,7 @@ const express = require("express");
 const { myDb } = require("../utils/db");
 const mongodb = require("mongodb");
 const Routes = express.Router();
+const isLogin = require("../middleware/isAuth");
 
 const path = require("path");
 const { error } = require("console");
@@ -11,8 +12,11 @@ const {
   updateUser,
   deleteUser,
   loginUser,
+  googleAuth,
+  updateProfile,
 } = require("../controller/user");
 const { User } = require("../model/user");
+const { upload } = require("../middleware/muter");
 
 Routes.get("/register", (req, res) => {
   res.render("register");
@@ -36,10 +40,13 @@ Routes.get("/login", (req, res) => {
   res.render("login");
 });
 Routes.post("/login", loginUser);
+// upload.single("file"),
 
 Routes.post("/app/register", createUser);
 
-Routes.get("/home", findUsers);
+Routes.get("/app/users", findUsers);
+Routes.post("/app/google", googleAuth);
+Routes.get("/update/profile", isLogin, updateProfile);
 
 Routes.get("/database/users", (req, res) => {});
 module.exports = Routes;
