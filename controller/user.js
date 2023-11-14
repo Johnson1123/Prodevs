@@ -1,70 +1,3 @@
-// const { myDb } = require("../utils/db");
-// const mongodb = require("mongodb");
-
-// const createUser = async (req, res) => {
-//   const db = myDb();
-//   const { name, email, password } = req.body;
-
-//   try {
-//     db.collection("users").insertOne({ name, email, password });
-//     res.render("index", { name, email });
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// };
-
-// const findUsers = async (req, res) => {
-//   const db = myDb();
-//   try {
-//     db.collection("users")
-//       .find()
-//       .toArray()
-//       .then((users) => {
-//         res.render("users", { users });
-//         console.log(users);
-//       })
-//       .catch((err) => {
-//         console.log(err.message);
-//       });
-//   } catch (error) {
-//     console.log(err);
-//   }
-// };
-
-// const deleteUser = async (req, res) => {
-//   const { id } = req.params;
-//   const db = myDb();
-//   db.collection("users")
-//     .deleteOne({ _id: new mongodb.ObjectId(id) })
-//     .then((user) => {
-//       res.redirect("/home");
-//     })
-//     .catch((err) => console.log(err));
-// };
-// const updateUser = async (req, res) => {
-//   const { name, id, email, password } = req.body;
-//   const db = myDb();
-//   db.collection("users")
-//     .updateOne(
-//       { _id: new mongodb.ObjectId(id) },
-//       { $set: { name, email, password } }
-//     )
-//     .then((user) => {
-//       res.redirect("/home");
-//     })
-//     .catch((err) => console.log(err));
-// };
-
-// // findOne({_id: new mongodb.ObjectId(prod.id)})
-// // updateOne({ _id: new mongodb.ObjectId(prod.id) }, { $set: { name: "" } });
-
-// exports.createUser = createUser;
-// exports.findUsers = findUsers;
-// exports.updateUser = updateUser;
-// exports.deleteUser = deleteUser;
-
-// const { myDb } = require("../utils/db");
-
 // ------------------ 9 ----------
 const mongodb = require("mongodb");
 const { User } = require("../model/user");
@@ -77,18 +10,19 @@ const jwt = require("jsonwebtoken");
 
 const createUser = async (req, res) => {
   console.log(req.body);
-  const { name, email, password, confirmPassword, phone } = req.body;
+  const { fname, lname, phone, email, password, confirmPassword } = req.body;
   try {
     if (
-      name === "" ||
+      fname === "" ||
+      lname === "" ||
       email === "" ||
       password === "" ||
       phone === "" ||
       confirmPassword === ""
     ) {
       return res.status(400).json({
-        status: "failed",
-        message: "All filed must be filled",
+        status: "fail",
+        message: "All field must be filled",
       });
     }
 
@@ -113,7 +47,7 @@ const createUser = async (req, res) => {
 
     const hashPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
-      name,
+      name: fname + " " + lname,
       email,
       password: hashPassword,
       // avater: cldRes.url,
@@ -146,10 +80,22 @@ const deleteUser = async (req, res) => {
   const { id } = req.params;
 };
 const updateUser = async (req, res) => {
-  const { name, id, email, password } = req.body;
+  const { fname, lname, email, phone, id } = req.body;
   try {
-    await User.findByIdAndUpdate(id, { name, email, password }).then((user) => {
-      res.redirect("/home");
+    const user = await User.findByIdAndUpdate(id, {
+      name: fname + " " + lname,
+      email,
+      phone,
+    });
+    if (!user) {
+      res.status(400).json({
+        status: "fail",
+        message: "user cannot be found",
+      });
+    }
+    res.status(201).json({
+      status: "success",
+      data: user,
     });
   } catch (error) {
     console.log(error);
@@ -157,7 +103,7 @@ const updateUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-  // res.setHeader("Set-Cookie", "isLoggined=true");
+  console.log(req.body);
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
@@ -181,13 +127,33 @@ const loginUser = async (req, res) => {
 
   return res.status(200).json({
     status: "success",
-    user,
+    data: user,
     token,
   });
   // req.session.isLoggined = true;
   // req.session.user = user;
 };
 
+const getUser = async (req, res) => {
+  const token = req.header("Authorization");
+  if (!token) {
+    return res.status(401).json({
+      status: "fail",
+      message: "UnAuthorize page, please login",
+    });
+  }
+  const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
+  if (!verifyToken) {
+    return res.status(401).json({
+      status: "fail",
+      message: "UnAuthorize page, Invalid token",
+    });
+  }
+  return res.status(200).json({
+    status: "success",
+    data: verifyToken,
+  });
+};
 const googleAuth = async (req, res) => {
   const { token } = req.body;
   const ticket = await client.verifyIdToken({
@@ -263,3 +229,4 @@ exports.deleteUser = deleteUser;
 exports.loginUser = loginUser;
 exports.googleAuth = googleAuth;
 exports.updateProfile = updateProfile;
+exports.getUser = getUser;

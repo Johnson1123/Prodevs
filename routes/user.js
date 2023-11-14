@@ -14,13 +14,10 @@ const {
   loginUser,
   googleAuth,
   updateProfile,
+  getUser,
 } = require("../controller/user");
 const { User } = require("../model/user");
 const { upload } = require("../middleware/muter");
-
-Routes.get("/register", (req, res) => {
-  res.render("register");
-});
 
 Routes.get("/app/update/:id", async (req, res) => {
   const { id } = req.params;
@@ -33,20 +30,15 @@ Routes.get("/app/update/:id", async (req, res) => {
   }
 });
 
-Routes.post("/app/update", updateUser);
+// Routes.post("/app/update", updateUser);
 Routes.get("/app/delete/:id", deleteUser);
 
-Routes.get("/login", (req, res) => {
-  res.render("login");
-});
-Routes.post("/login", loginUser);
-// upload.single("file"),
-
+Routes.post("/app/login", loginUser);
 Routes.post("/app/register", createUser);
-
 Routes.get("/app/users", findUsers);
+Routes.get("/app/get-user", getUser);
+Routes.post("/app/update-user", updateUser);
 Routes.post("/app/google", googleAuth);
 Routes.get("/update/profile", isLogin, updateProfile);
-
 Routes.get("/database/users", (req, res) => {});
 module.exports = Routes;

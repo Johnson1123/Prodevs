@@ -25,7 +25,7 @@ module.exports = async (req, res, next) => {
     });
   }
 
-  const user = jwt.verify(token, process.env.JWT_SECRET);
+  const user = await jwt.verify(token, process.env.JWT_SECRET);
 
   if (!user) {
     return res.status(401).json({

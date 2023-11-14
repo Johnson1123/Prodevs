@@ -161,35 +161,13 @@ app.use(
   })
 );
 app.use(express.static(__dirname + "/public"));
-app.set("view engine", "ejs");
 app.use(express.json());
 app.use(bodyPaser.urlencoded({ extended: true }));
-
-// const store = new sessionDB({
-//   uri: process.env.CONNECTURI,
-//   collection: "sessions",
-// });
-// app.use(
-//   session({ secret: "myOwnSe", resave: false, saveUninitialized: false })
-// );
 
 const Routes = require("./routes/user");
 const db = require("./utils/db");
 const { User } = require("./model/user");
-// app.use(async (req, res, next) => {
-//   try {
-//     const user = await User.find();
-//     req.user = user[0];
-//   } catch (error) {
-//     console.log(error);
-//   }
-//   next();
-// });
 
-// app.use((req, res, next) => {
-//   req.body.name = "";
-//   next();
-// });
 app.use(Routes);
 
 db(app.listen(3000));

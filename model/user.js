@@ -18,9 +18,8 @@ const userSchema = new mongoose.Schema({
     min: [3, "Password too short"],
     required: [true, "password is required"],
   },
-
-  avater: {
-    type: Object,
+  file: {
+    type: String,
   },
   phone: {
     type: String,
