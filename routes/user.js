@@ -3,6 +3,7 @@ const { myDb } = require("../utils/db");
 const mongodb = require("mongodb");
 const Routes = express.Router();
 const isLogin = require("../middleware/isAuth");
+const isAuth = require("../middleware/isAuth");
 
 const path = require("path");
 const { error } = require("console");
@@ -15,6 +16,7 @@ const {
   googleAuth,
   updateProfile,
   getUser,
+  changePassword,
 } = require("../controller/user");
 const { User } = require("../model/user");
 const { upload } = require("../middleware/muter");
@@ -39,6 +41,6 @@ Routes.get("/app/users", findUsers);
 Routes.get("/app/get-user", getUser);
 Routes.post("/app/update-user", updateUser);
 Routes.post("/app/google", googleAuth);
-Routes.get("/update/profile", isLogin, updateProfile);
+Routes.post("/app/change-password", isAuth, changePassword);
 Routes.get("/database/users", (req, res) => {});
 module.exports = Routes;

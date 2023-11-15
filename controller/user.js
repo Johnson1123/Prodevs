@@ -168,65 +168,48 @@ const googleAuth = async (req, res) => {
   });
 };
 
-const updateProfile = async (req, res) => {
-  const user = req.body;
+const changePassword = async (req, res) => {
+  try {
+    const { password, newPassword, confirmNewPassword } = req.body;
+    const email = req.user;
 
-  return res.status(200).json({
-    status: "success",
-    user,
-    message: "You're authorized",
-  });
+    const userExist = await User.findOne({ email }).select("+password");
+
+    const samePass = await bcrypt.compare(password, userExist.password);
+
+    if (!samePass) {
+      res.status(400).json({
+        status: "fail",
+        message: " incorrect password",
+      });
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      res.status(400).json({
+        status: "fail",
+        message: "password not match",
+      });
+    }
+    const newHash = await bcrypt.hash(password, 10);
+
+    userExist.password = newHash;
+
+    const saveUser = await userExist.save();
+    if (saveUser) {
+      return res.status(201).json({
+        status: "success",
+        message: "password changed seccuessfuly",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };
-
-// findOne({_id: new mongodb.ObjectId(prod.id)})
-// updateOne({ _id: new mongodb.ObjectId(prod.id) }, { $set: { name: "" } });
-
-// const AuthCreateUser = async (req, res) => {
-//   const { email, name, password } = req.body;
-//   const userEmail = await User.findOne({ email });
-//   try {
-//     if (userEmail) {
-//       return res.send("Email Already Exist");
-//     }
-//     const hashedPass = await bcrypt.hash(password, 12);
-
-//     if (hashedPass) {
-//       const user = new User({
-//         email,
-//         name,
-//         password: hashedPass,
-//       });
-//       user.save();
-//       return res.status(200).json({
-//         status: "Successful",
-//         user,
-//       });
-//     }
-//   } catch (error) {}
-// };
-
-// const loginUser = async (req, res) => {
-//   const { email, password } = req.body;
-//   try {
-//     const userEmail = await User.findOne({ email });
-//     if (!userEmail) {
-//       return res.status(500).json({
-//         status: false,
-//         message: "Email not found",
-//       });
-//     }
-//     const correctPass = await bcrypt.compare(password, userEmail.password);
-//     res.session.isLoggedIn = true;
-//     res.session.user = userEmail;
-//     req.session.save();
-//     return res;
-//   } catch (error) {}
-// };
 exports.createUser = createUser;
 exports.findUsers = findUsers;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
 exports.loginUser = loginUser;
 exports.googleAuth = googleAuth;
-exports.updateProfile = updateProfile;
 exports.getUser = getUser;
+exports.changePassword = changePassword;

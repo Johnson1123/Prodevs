@@ -15,9 +15,7 @@
 const jwt = require("jsonwebtoken");
 
 module.exports = async (req, res, next) => {
-  // const token = req.header("Authorization")
-  const token = req.body.token;
-
+  const token = req.header("Authorization");
   if (!token) {
     return res.status(401).json({
       status: "Failed",
@@ -30,11 +28,11 @@ module.exports = async (req, res, next) => {
   if (!user) {
     return res.status(401).json({
       status: "Failed",
-      message: "UnAuthorized, please login",
+      message: "UnAuthorized, invalid token",
     });
   }
 
-  req.body = user._doc;
+  req.user = user._doc.email;
 
   next();
 };
